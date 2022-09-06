@@ -7,7 +7,7 @@ use core::panic;
 /// symmetric and transitive.
 /// It's not directly usable when relationships have direction (e.g. if A points to B, B doesn't necessarily points to
 /// A).
-trait UnionFind {
+pub trait UnionFind {
     /// Establishes a "union" relashionship between the integer values `p` and `q`
     fn union(&mut self, p: u32, q: u32) -> ();
     /// Whether the two provided integer values belong to the same set, or two disjoint sets.
@@ -18,11 +18,11 @@ trait UnionFind {
     fn count(&self) -> usize;
 }
 
-struct DisjointSet {
+struct QuickFind {
     array: Vec<u32>,
 }
 
-impl UnionFind for DisjointSet {
+impl UnionFind for QuickFind {
     fn union(&mut self, p: u32, q: u32) -> () {
         let p_value = self.array[p as usize];
         let q_value = self.array[q as usize];
@@ -64,22 +64,32 @@ impl UnionFind for DisjointSet {
     }
 }
 
+impl QuickFind {
+    fn new(n: u32) -> QuickFind {
+        let mut i = 0;
+        let mut array = vec![];
+        while i < n {
+            array.push(i);
+            i += 1;
+        }
+        return QuickFind { array: array };
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use crate::union_find::{DisjointSet, UnionFind};
+    use crate::quick_find::{QuickFind, UnionFind};
 
     #[test]
     #[should_panic(expected = "The disjoint set is empty")]
     fn is_connected_empty_set() {
-        let result = DisjointSet { array: vec![] };
+        let result = QuickFind::new(0);
         result.is_connected(42, 0);
     }
 
     #[test]
     fn is_connected_symmetric() {
-        let mut set = DisjointSet {
-            array: vec![0, 1, 2, 3, 4],
-        };
+        let mut set = QuickFind::new(5);
         set.union(3, 4);
         assert_eq!(set.is_connected(3, 4), true);
         assert_eq!(set.is_connected(4, 3), true);
@@ -89,9 +99,7 @@ mod tests {
 
     #[test]
     fn is_connected_transitive() {
-        let mut set = DisjointSet {
-            array: vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-        };
+        let mut set = QuickFind::new(10);
         assert_eq!(set.is_connected(0, 1), false);
         assert_eq!(set.is_connected(0, 9), false);
         set.union(0, 9);
@@ -104,18 +112,14 @@ mod tests {
 
     #[test]
     fn is_connected() {
-        let set = DisjointSet {
-            array: vec![0, 1, 2, 3, 4, 5, 6],
-        };
+        let set = QuickFind::new(7);
         assert_eq!(set.is_connected(1, 0), false);
         assert_eq!(set.is_connected(0, 0), true);
     }
 
     #[test]
     fn union() {
-        let mut set = DisjointSet {
-            array: vec![0, 1, 2, 3, 4, 5, 6],
-        };
+        let mut set = QuickFind::new(7);
         set.union(0, 1);
         assert_eq!(set.is_connected(0, 1), true);
         assert_eq!(set.is_connected(0, 2), false);
@@ -123,9 +127,7 @@ mod tests {
 
     #[test]
     fn find() {
-        let mut set = DisjointSet {
-            array: vec![0, 1, 2, 3, 4, 5, 6],
-        };
+        let mut set = QuickFind::new(7);
         set.union(0, 1);
         assert_eq!(set.is_connected(0, 1), true);
         assert_eq!(set.find(0), set.find(1));
@@ -135,9 +137,7 @@ mod tests {
 
     #[test]
     fn count() {
-        let set = DisjointSet {
-            array: vec![0, 1, 2, 3, 4, 5, 6],
-        };
+        let set = QuickFind::new(7);
         assert_eq!(set.count(), 7);
     }
 }
