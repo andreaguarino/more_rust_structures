@@ -1,6 +1,6 @@
-use crate::quick_find::UnionFind;
+use crate::union_find::UnionFind;
 
-/// Implements union in `O(1)` and find in O(n)
+/// Implements union in `O(n)` and find in `O(n)`
 struct QuickUnion {
     array: Vec<u32>,
 }
@@ -60,7 +60,7 @@ impl QuickUnion {
 }
 
 mod tests {
-    use crate::{quick_find::UnionFind, quick_union::QuickUnion};
+    use crate::{quick_union::QuickUnion, union_find::UnionFind};
 
     #[test]
     #[should_panic(expected = "The disjoint set is empty")]
