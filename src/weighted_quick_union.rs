@@ -2,9 +2,9 @@ use std::vec;
 
 use crate::union_find::UnionFind;
 
-struct WeightedQuickUnion {
-    array: Vec<u32>,
-    heights: Vec<u32>,
+pub struct WeightedQuickUnion {
+    pub array: Vec<u32>,
+    pub heights: Vec<u32>,
 }
 
 impl UnionFind for WeightedQuickUnion {
@@ -48,7 +48,7 @@ impl UnionFind for WeightedQuickUnion {
 }
 
 impl WeightedQuickUnion {
-    fn new(n: u32) -> WeightedQuickUnion {
+    pub fn new(n: u32) -> WeightedQuickUnion {
         let mut i = 0;
         let mut array = vec![];
         let mut heights = vec![];
