@@ -4,21 +4,21 @@ use crate::union_find::UnionFind;
 
 pub struct WeightedQuickUnion {
     pub array: Vec<u32>,
-    pub heights: Vec<u32>,
+    pub ranks: Vec<u32>,
 }
 
 impl UnionFind for WeightedQuickUnion {
     fn union(&mut self, p: u32, q: u32) -> () {
         let p_root = self.root(p);
         let q_root = self.root(q);
-        let p_height = self.heights[p_root as usize];
-        let q_height = self.heights[q_root as usize];
-        if p_height > q_height {
+        let p_rank = self.ranks[p_root as usize];
+        let q_rank = self.ranks[q_root as usize];
+        if p_rank > q_rank {
             self.array[q_root as usize] = p_root;
-            self.heights[p_root as usize] = std::cmp::max(p_height, q_height + 1);
+            self.ranks[p_root as usize] = std::cmp::max(p_rank, q_rank + 1);
         } else {
             self.array[p_root as usize] = q_root;
-            self.heights[q_root as usize] = std::cmp::max(q_height, p_height + 1);
+            self.ranks[q_root as usize] = std::cmp::max(q_rank, p_rank + 1);
         }
     }
 
@@ -51,15 +51,15 @@ impl WeightedQuickUnion {
     pub fn new(n: u32) -> WeightedQuickUnion {
         let mut i = 0;
         let mut array = vec![];
-        let mut heights = vec![];
+        let mut ranks = vec![];
         while i < n {
             array.push(i);
-            heights.push(0);
+            ranks.push(0);
             i += 1;
         }
         return WeightedQuickUnion {
             array: array,
-            heights: heights,
+            ranks,
         };
     }
 
@@ -148,15 +148,15 @@ mod tests {
     }
 
     #[test]
-    fn heights() {
+    fn ranks() {
         let mut set = WeightedQuickUnion::new(7);
         set.union(2, 3);
-        assert_eq!(set.heights[set.root(2) as usize], 1);
-        assert_eq!(set.heights[set.root(3) as usize], 1);
+        assert_eq!(set.ranks[set.root(2) as usize], 1);
+        assert_eq!(set.ranks[set.root(3) as usize], 1);
         set.union(3, 6);
-        assert_eq!(set.heights[set.root(3) as usize], 1);
+        assert_eq!(set.ranks[set.root(3) as usize], 1);
         set.union(1, 5);
         set.union(1, 3);
-        assert_eq!(set.heights[set.root(1) as usize], 2);
+        assert_eq!(set.ranks[set.root(1) as usize], 2);
     }
 }

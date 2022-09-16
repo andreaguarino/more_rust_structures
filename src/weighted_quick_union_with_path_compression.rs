@@ -8,14 +8,14 @@ impl UnionFind for WeightedQuickUnionWithPathCompression<WeightedQuickUnion> {
     fn union(&mut self, p: u32, q: u32) -> () {
         let p_root = self.root(p);
         let q_root = self.root(q);
-        let p_height = self.wqu.heights[p_root as usize];
-        let q_height = self.wqu.heights[q_root as usize];
-        if p_height > q_height {
+        let p_rank = self.wqu.ranks[p_root as usize];
+        let q_rank = self.wqu.ranks[q_root as usize];
+        if p_rank > q_rank {
             self.wqu.array[q_root as usize] = p_root;
-            self.wqu.heights[p_root as usize] = std::cmp::max(p_height, q_height + 1);
+            self.wqu.ranks[p_root as usize] = std::cmp::max(p_rank, q_rank + 1);
         } else {
             self.wqu.array[p_root as usize] = q_root;
-            self.wqu.heights[q_root as usize] = std::cmp::max(q_height, p_height + 1);
+            self.wqu.ranks[q_root as usize] = std::cmp::max(q_rank, p_rank + 1);
         }
     }
 
@@ -127,19 +127,19 @@ mod tests {
     }
 
     #[test]
-    fn heights() {
+    fn ranks() {
         let mut set = WeightedQuickUnionWithPathCompression::new(7);
         set.union(2, 3);
         let root2 = set.root(2);
         let root3 = set.root(3);
-        assert_eq!(set.wqu.heights[root2 as usize], 1);
-        assert_eq!(set.wqu.heights[root3 as usize], 1);
+        assert_eq!(set.wqu.ranks[root2 as usize], 1);
+        assert_eq!(set.wqu.ranks[root3 as usize], 1);
         set.union(3, 6);
         let root3 = set.root(3);
-        assert_eq!(set.wqu.heights[root3 as usize], 1);
+        assert_eq!(set.wqu.ranks[root3 as usize], 1);
         set.union(1, 5);
         set.union(1, 3);
         let root1 = set.root(3);
-        assert_eq!(set.wqu.heights[root1 as usize], 2);
+        assert_eq!(set.wqu.ranks[root1 as usize], 2);
     }
 }
