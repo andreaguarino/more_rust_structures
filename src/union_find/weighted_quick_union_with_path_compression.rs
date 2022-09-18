@@ -1,4 +1,4 @@
-use crate::{union_find::UnionFind, weighted_quick_union::WeightedQuickUnion};
+use crate::{union_find::weighted_quick_union::WeightedQuickUnion, union_find::UnionFind};
 
 struct WeightedQuickUnionWithPathCompression<WQU> {
     wqu: WQU,
@@ -50,10 +50,11 @@ impl WeightedQuickUnionWithPathCompression<WeightedQuickUnion> {
     }
 }
 
+#[cfg(test)]
 mod tests {
     use crate::{
+        union_find::weighted_quick_union_with_path_compression::WeightedQuickUnionWithPathCompression,
         union_find::UnionFind,
-        weighted_quick_union_with_path_compression::WeightedQuickUnionWithPathCompression,
     };
 
     #[test]
