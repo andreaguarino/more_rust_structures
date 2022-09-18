@@ -1,3 +1,8 @@
+mod quick_find;
+mod quick_union;
+mod weighted_quick_union;
+mod weighted_quick_union_with_path_compression;
+
 /// A data structure modelling a collection of sets of non-negative consecutive integer values 0..k-1, where set can be
 /// easily merged together and values can be easily checked for membership to the same set.
 /// ### Remarks

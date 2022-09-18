@@ -62,7 +62,7 @@ impl QuickFind {
 
 #[cfg(test)]
 mod tests {
-    use crate::quick_find::{QuickFind, UnionFind};
+    use crate::union_find::quick_find::{QuickFind, UnionFind};
 
     #[test]
     #[should_panic(expected = "The disjoint set is empty")]
