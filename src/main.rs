@@ -1,3 +1,4 @@
+mod stack;
 mod union_find;
 
 fn main() {
