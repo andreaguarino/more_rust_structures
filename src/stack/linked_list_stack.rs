@@ -13,6 +13,10 @@ struct LinkedListStack<T: Clone> {
 }
 
 impl<T: Clone> Stack<T> for LinkedListStack<T> {
+    /// Push item of type `T` into the head of the linked list
+    /// Note that `self.head` needs to cloned in order to perform a move.
+    /// This has to be done explicitely, because `Box` types don't implement the Copy trait
+    /// Time and space complexity: O(1) - however it may depend on the clone
     fn push(&mut self, item: T) -> () {
         let head = self.head.clone();
         let new_head = Node { item, next: head };
@@ -20,25 +24,38 @@ impl<T: Clone> Stack<T> for LinkedListStack<T> {
         self.size += 1;
     }
 
+    /// Returns item reference by `head` from the linked list
+    /// Update `head` to point to the second element in the linked list
+    /// Time and space complexity: O(1) - however it may depend on the clone
     fn pop(&mut self) -> T {
-        let head = match self.head.clone() {
+        let previous_head = match self.head.clone() {
             Some(h) => h,
             None => panic!("Cannot call pop on an empty stack"),
         };
-        self.head = (*head).next;
+        self.head = (*previous_head).next;
         self.size -= 1;
-        return (*head).item;
+        (*previous_head).item
     }
 
+    /// Time and space complexity: O(1) - however it may depend on the clone
     fn peek(&self) -> T {
-        return match self.head.clone() {
+        match self.head.clone() {
             Some(h) => (*h).item,
             None => panic!("Cannot call peek on an empty stack"),
-        };
+        }
     }
-
+    /// Time and space complexity: O(1)
     fn count(&self) -> usize {
-        return self.size;
+        self.size
+    }
+}
+
+impl<T: Clone> LinkedListStack<T> {
+    fn new() -> Self {
+        LinkedListStack::<T> {
+            head: None,
+            size: 0,
+        }
     }
 }
 
@@ -48,10 +65,7 @@ mod tests {
 
     #[test]
     fn stack_push_pop() {
-        let mut stack = LinkedListStack::<u32> {
-            head: None,
-            size: 0,
-        };
+        let mut stack = LinkedListStack::new();
         stack.push(42);
         assert_eq!(stack.count(), 1);
         assert_eq!(stack.peek(), 42);
