@@ -12,7 +12,7 @@ pub trait Stack<T> {
     fn pop(&mut self) -> T;
 
     /// Returns the item of type `T` on top of the stack, without popping it out from the stack.
-    fn peek(&self) -> T;
+    fn peek(&self) -> &T;
 
     /// The number of items currently in the stack.
     fn count(&self) -> usize;
