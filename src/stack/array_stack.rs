@@ -1,5 +1,6 @@
 use crate::stack::Stack;
 
+/// Uses a Vector of a given capacity (16 by default)
 struct ArrayStack<T: Clone> {
     array: Vec<Option<T>>,
     head: Option<usize>,
@@ -8,6 +9,9 @@ struct ArrayStack<T: Clone> {
 }
 
 impl<T: Clone> Stack<T> for ArrayStack<T> {
+    /// Pushes item of type `T` at the position pointed by `head`
+    /// Capacity will be updated once `capacity == count`
+    /// Amortized complexity: O(1)
     fn push(&mut self, item: T) -> () {
         if self.capacity() == self.count() {
             self.update_capacity(self.capacity * 2);
@@ -21,6 +25,11 @@ impl<T: Clone> Stack<T> for ArrayStack<T> {
         self.size += 1;
     }
 
+    /// Pops item of type `T` pointed by `head`
+    /// Sets `array[head]` to None
+    /// Capacity will be updated once `count` will become equals or less then 25% of the capacity
+    /// Amortized complexity: O(1)
+    /// Note that element needs to be cloned
     fn pop(&mut self) -> T {
         let curr_head = self.head_index();
         let value = self.array[curr_head].clone();
@@ -75,7 +84,9 @@ impl<T: Clone> ArrayStack<T> {
     fn capacity(&self) -> usize {
         self.capacity
     }
-
+    /// Allocates a new vector with the updated capacity
+    /// Copies elements to the new vector, while filling with `None` the new added cells
+    /// Time and space complexity: O(n)
     fn update_capacity(&mut self, new_capacity: usize) -> () {
         let mut new_array = Vec::with_capacity(new_capacity);
         for i in 0..new_capacity {
