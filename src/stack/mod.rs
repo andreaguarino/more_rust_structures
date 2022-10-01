@@ -1,3 +1,4 @@
+mod array_stack;
 mod linked_list_stack;
 
 /// Defines the interface common to all *Stack* implementations.
