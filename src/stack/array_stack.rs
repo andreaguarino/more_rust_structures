@@ -3,8 +3,7 @@ use crate::stack::Stack;
 /// Uses a Vector of a given capacity (16 by default)
 struct ArrayStack<T: Clone> {
     array: Vec<Option<T>>,
-    head: Option<usize>,
-    size: usize,
+    count: usize,
     capacity: usize,
 }
 
@@ -13,16 +12,11 @@ impl<T: Clone> Stack<T> for ArrayStack<T> {
     /// Capacity will be updated once `capacity == count`
     /// Amortized complexity: O(1)
     fn push(&mut self, item: T) -> () {
-        if self.capacity() == self.count() {
-            self.update_capacity(self.capacity * 2);
+        if self.capacity() == self.count {
+            self.update_capacity(self.capacity() * 2);
         }
-        let new_head = match self.head {
-            None => 0,
-            Some(h) => h + 1,
-        };
-        self.array[new_head] = Some(item);
-        self.head = Some(new_head);
-        self.size += 1;
+        self.array[self.count] = Some(item);
+        self.count += 1;
     }
 
     /// Pops item of type `T` pointed by `head`
@@ -31,34 +25,29 @@ impl<T: Clone> Stack<T> for ArrayStack<T> {
     /// Amortized complexity: O(1)
     /// Note that element needs to be cloned
     fn pop(&mut self) -> T {
-        let curr_head = self.head_index();
-        let value = self.array[curr_head].clone();
+        let head = self.count - 1;
+        let value = self.array[head].clone();
         let item = match value {
             None => panic!("Cannot call pop. No value at the head of the stack."),
             Some(item) => item,
         };
-        self.array[curr_head] = None;
-        self.head = if curr_head == 0 {
-            None
-        } else {
-            Some(curr_head - 1)
-        };
-        self.size -= 1;
-        if self.count() <= self.capacity() / 4 {
-            self.update_capacity(self.capacity / 2);
+        self.array[head] = None;
+        self.count -= 1;
+        if self.count <= self.capacity() / 4 {
+            self.update_capacity(self.capacity() / 2);
         }
         item
     }
 
     fn peek(&self) -> T {
-        match self.array[self.size - 1].clone() {
+        match self.array[self.count - 1].clone() {
             None => panic!("Cannot call peek on an empty stack"),
             Some(item) => item,
         }
     }
 
     fn count(&self) -> usize {
-        self.size
+        self.count
     }
 }
 
@@ -66,19 +55,11 @@ impl<T: Clone> ArrayStack<T> {
     fn new(initial_capacity: usize) -> Self {
         let mut stack = ArrayStack {
             array: Vec::with_capacity(initial_capacity),
-            head: None,
-            size: 0,
+            count: 0,
             capacity: initial_capacity,
         };
         stack.array = vec![None; initial_capacity];
         return stack;
-    }
-
-    fn head_index(&self) -> usize {
-        match self.head {
-            None => panic!("The stack is empty"),
-            Some(h) => h,
-        }
     }
 
     fn capacity(&self) -> usize {
