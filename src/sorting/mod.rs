@@ -67,9 +67,53 @@ fn insertion_sort<T: Ord>(list: &mut Vec<T>) {
     }
 }
 
+fn merge_sort<T: Ord + Copy>(list: &mut Vec<T>) {
+    let mut aux = list.clone();
+    merge_sort_rec(list.as_mut_slice(), aux.as_mut_slice());
+}
+
+fn merge_sort_rec<T: Ord + Copy>(list: &mut [T], aux: &mut [T]) {
+    let len = list.len();
+    if len <= 1 {
+        return;
+    }
+    merge_sort_rec(&mut list[..len / 2], &mut aux[..len / 2]);
+    merge_sort_rec(&mut list[len / 2..], &mut aux[len / 2..]);
+    merge(list, aux);
+}
+
+fn merge<T: Ord + Copy>(list: &mut [T], aux: &mut [T]) {
+    let len = list.len();
+    let mut i = 0;
+    let mut j = len / 2;
+    let mut k = 0;
+    while i < len / 2 && j < len {
+        if list[i] <= list[j] {
+            aux[k] = list[i];
+            i += 1;
+            k += 1;
+        } else {
+            aux[k] = list[j];
+            j += 1;
+            k += 1;
+        }
+    }
+    while i < len / 2 {
+        aux[k] = list[i];
+        i += 1;
+        k += 1;
+    }
+    while j < len {
+        aux[k] = list[j];
+        j += 1;
+        k += 1;
+    }
+    list.copy_from_slice(&aux);
+}
+
 #[cfg(test)]
 mod tests {
-    use crate::sorting::{insertion_sort, selection_sort};
+    use crate::sorting::{insertion_sort, merge_sort, selection_sort};
 
     #[test]
     fn selection_sort_test() {
@@ -81,6 +125,12 @@ mod tests {
     fn insertion_sort_test() {
         sorting_test(insertion_sort);
         sorting_test_str(insertion_sort);
+    }
+
+    #[test]
+    fn merge_sort_test() {
+        sorting_test(merge_sort);
+        sorting_test_str(merge_sort);
     }
 
     fn sorting_test<F>(sorting_function: F)
