@@ -1,3 +1,5 @@
+mod quick_sort;
+
 ///     ## Advantages and Disadvantages
 ///     - The algorithm performs sorting in place and is online.
 ///     - It is not stable in its basic form and requires additional space or specific assumptions on the type of list
@@ -113,7 +115,7 @@ fn merge<T: Ord + Copy>(list: &mut [T], aux: &mut [T]) {
 
 #[cfg(test)]
 mod tests {
-    use crate::sorting::{insertion_sort, merge_sort, selection_sort};
+    use super::{insertion_sort, merge_sort, quick_sort::quick_sort, selection_sort};
 
     #[test]
     fn selection_sort_test() {
@@ -131,6 +133,12 @@ mod tests {
     fn merge_sort_test() {
         sorting_test(merge_sort);
         sorting_test_str(merge_sort);
+    }
+
+    #[test]
+    fn quick_sort_test() {
+        sorting_test(quick_sort);
+        sorting_test_str(quick_sort);
     }
 
     fn sorting_test<F>(sorting_function: F)
