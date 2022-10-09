@@ -115,7 +115,11 @@ fn merge<T: Ord + Copy>(list: &mut [T], aux: &mut [T]) {
 
 #[cfg(test)]
 mod tests {
-    use super::{insertion_sort, merge_sort, quick_sort::quick_sort, selection_sort};
+    use super::{
+        insertion_sort, merge_sort,
+        quick_sort::{quick_selection, quick_sort},
+        selection_sort,
+    };
 
     #[test]
     fn selection_sort_test() {
@@ -141,6 +145,12 @@ mod tests {
         sorting_test_str(quick_sort);
     }
 
+    #[test]
+    fn quick_selection_test() {
+        let mut list = vec![4, 7, 11, 0, 3, 5, 42, 12];
+        assert_eq!(*quick_selection(&mut list, 4), 7);
+    }
+
     fn sorting_test<F>(sorting_function: F)
     where
         F: (Fn(&mut Vec<i32>) -> ()),
@@ -156,6 +166,10 @@ mod tests {
         let mut singleton_array: Vec<i32> = vec![42];
         sorting_function(&mut singleton_array);
         assert_eq!(singleton_array, vec![42]);
+
+        let mut longer_list = vec![4, 7, 11, 0, 3, 5, 42, 12];
+        sorting_function(&mut longer_list);
+        assert_eq!(longer_list, vec![0, 3, 4, 5, 7, 11, 12, 42]);
     }
 
     fn sorting_test_str<F>(sorting_function: F)
