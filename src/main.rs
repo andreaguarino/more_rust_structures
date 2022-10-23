@@ -1,3 +1,4 @@
+mod dictionary;
 mod sorting;
 mod stack;
 mod union_find;
