@@ -1,49 +1,65 @@
 pub fn quick_sort<T: Ord + Clone>(list: &mut Vec<T>) {
-    _quick_sort(list);
-}
-
-pub fn quick_selection<T: Ord + Clone>(list: &mut Vec<T>, k: usize) -> &T {
-    _quick_selection(list, k)
-}
-
-fn _quick_sort<T: Ord + Clone>(list: &mut [T]) {
     if list.len() <= 1 {
         return;
     }
-    let pivot = list[list.len() / 2].clone();
-    let j = partition(list, pivot);
-    _quick_sort(&mut list[..j]);
-    _quick_sort(&mut list[j + 1..]);
+    let low = 0;
+    let high = list.len() - 1;
+    _quick_sort(list, low, high);
 }
 
-fn partition<T: Ord>(list: &mut [T], pivot: T) -> usize {
-    let mut i = 0;
-    let mut j = list.len() - 1;
+pub fn quick_selection<T: Ord + Clone>(list: &mut Vec<T>, k: usize) -> Option<&T> {
+    if list.len() == 0 {
+        return None;
+    }
+    let low = 0;
+    let high = list.len() - 1;
+    _quick_selection(list, k, low, high)
+}
+
+fn _quick_sort<T: Ord + Clone>(list: &mut [T], low: usize, high: usize) {
+    if low >= high {
+        return;
+    }
+    let p = partition(list, low, high);
+    _quick_sort(list, low, p);
+    _quick_sort(list, p + 1, high);
+}
+
+fn partition<T: Ord + Clone>(list: &mut [T], low: usize, high: usize) -> usize {
+    let pivot = list[(high + low) / 2].clone();
+    let mut i = low as i32 - 1;
+    let mut j = high as i32 + 1;
     loop {
-        while list[i] < pivot {
+        i += 1;
+        while list[i as usize] < pivot {
             i += 1;
         }
-        while list[j] > pivot {
+        j -= 1;
+        while list[j as usize] > pivot {
             j -= 1;
         }
-        if i == j {
-            return j;
+        if i >= j {
+            return j as usize;
         }
-        list.swap(i, j);
+        list.swap(i as usize, j as usize);
     }
 }
 
-pub fn _quick_selection<T: Ord + Clone>(list: &mut [T], k: usize) -> &T {
-    if list.len() == 1 {
-        return &list[0];
+pub fn _quick_selection<T: Ord + Clone>(
+    list: &mut [T],
+    k: usize,
+    low: usize,
+    high: usize,
+) -> Option<&T> {
+    if k > high {
+        return None;
     }
-    let pivot = list[list.len() / 2].clone();
-    let j = partition(list, pivot);
+    let j = partition(list, low, high);
     if j == k {
-        return &list[j];
+        return Some(&list[j]);
     }
     if j > k {
-        return _quick_selection(&mut list[..j], k);
+        return _quick_selection(list, k, low, j);
     }
-    _quick_selection(&mut list[j + 1..], k - j - 1)
+    _quick_selection(list, k, j + 1, high)
 }

@@ -71,16 +71,16 @@ fn insertion_sort<T: Ord>(list: &mut Vec<T>) {
 
 fn merge_sort<T: Ord + Copy>(list: &mut Vec<T>) {
     let mut aux = list.clone();
-    merge_sort_rec(list.as_mut_slice(), aux.as_mut_slice());
+    _merge_sort(list.as_mut_slice(), aux.as_mut_slice());
 }
 
-fn merge_sort_rec<T: Ord + Copy>(list: &mut [T], aux: &mut [T]) {
+fn _merge_sort<T: Ord + Copy>(list: &mut [T], aux: &mut [T]) {
     let len = list.len();
     if len <= 1 {
         return;
     }
-    merge_sort_rec(&mut list[..len / 2], &mut aux[..len / 2]);
-    merge_sort_rec(&mut list[len / 2..], &mut aux[len / 2..]);
+    _merge_sort(&mut list[..len / 2], &mut aux[..len / 2]);
+    _merge_sort(&mut list[len / 2..], &mut aux[len / 2..]);
     merge(list, aux);
 }
 
@@ -148,7 +148,24 @@ mod tests {
     #[test]
     fn quick_selection_test() {
         let mut list = vec![4, 7, 11, 0, 3, 5, 42, 12];
-        assert_eq!(*quick_selection(&mut list, 4), 7);
+        assert_eq!(*quick_selection(&mut list, 0).unwrap(), 0);
+        assert_eq!(*quick_selection(&mut list, 1).unwrap(), 3);
+        assert_eq!(*quick_selection(&mut list, 2).unwrap(), 4);
+        assert_eq!(*quick_selection(&mut list, 3).unwrap(), 5);
+        assert_eq!(*quick_selection(&mut list, 4).unwrap(), 7);
+        assert_eq!(*quick_selection(&mut list, 5).unwrap(), 11);
+        assert_eq!(*quick_selection(&mut list, 6).unwrap(), 12);
+        assert_eq!(*quick_selection(&mut list, 7).unwrap(), 42);
+        assert_eq!(quick_selection(&mut list, 8), None);
+
+        let mut list = vec![4, 7, 11, 0, 3, 3, 5, 42, 12];
+        assert_eq!(*quick_selection(&mut list, 4).unwrap(), 5);
+
+        let mut list = vec![0, 0, 0, 0, 0];
+        assert_eq!(*quick_selection(&mut list, 4).unwrap(), 0);
+
+        let mut list: Vec<i32> = vec![];
+        assert_eq!(quick_selection(&mut list, 4), None);
     }
 
     fn sorting_test<F>(sorting_function: F)
@@ -170,6 +187,10 @@ mod tests {
         let mut longer_list = vec![4, 7, 11, 0, 3, 5, 42, 12];
         sorting_function(&mut longer_list);
         assert_eq!(longer_list, vec![0, 3, 4, 5, 7, 11, 12, 42]);
+
+        let mut longer_list = vec![4, 7, 11, 7, 7, 7, 3, 5, 42, 12];
+        sorting_function(&mut longer_list);
+        assert_eq!(longer_list, vec![3, 4, 5, 7, 7, 7, 7, 11, 12, 42]);
     }
 
     fn sorting_test_str<F>(sorting_function: F)
