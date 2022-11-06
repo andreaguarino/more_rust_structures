@@ -69,6 +69,36 @@ fn insertion_sort<T: Ord>(list: &mut Vec<T>) {
     }
 }
 
+///     ## ADVANTAGES AND DISADVANTAGE
+///      - Compared to [selection_sort] and [insertion_sort], it has asymptotically better
+///       runtime, linearithmic instead of quadratic.
+///     - Compared to [quick_sort], it has **better worst-case performance**: linearithmic, instead of
+///       quadratic.
+///     - In general [merge_sort] does a number of comparisons which is independent from the
+///       input, whereas the number of comparisons in [quick_sort] depends on the input and in particular on
+///       the choice of the pivot.
+///     - Unlike [selection_sort], [quick_sort] and shell_sort, and like
+///       [insertion_sort] it is a **stable** sorting algorithm, so it preserves the order in the input
+///       of items with the same key.
+///     - A disadvantage over many other sorting algorithms is that it is **not
+///       in place**, as it requires additional `O(n)` space to perform the sorting.
+///     - An advantage over many other sorting algorithms, and in particular over [quick_sort], is that it
+///       is *easily parallelizable*.
+///     - The reason is that [merge_sort] is based on a "divide and conquer" design, where the partition of
+///       the problem in sub-problems is done in `O(1)` time (just split the array in two halves) while the combine phase
+///       (i.e. the merge) is more complex, taking `O(n)` time. In `quick_sort` it is rather the opposite: the
+///       partition is the `O(n)` operation, while the combine comes for free.
+///     - Another advantage of [merge_sort] over other comparison-based algorithms is that it performs an
+///       **optimal number of comparisons**: `n * log(n)`. No other comparison-based algorithm can do better. That,
+///       however, doesn't mean that [merge_sort] performs better than any other comparison-based algorithm:
+///       while [quick_sort] performs more comparisons in average (~ 39% more, in practice), it also does
+///       sorting in place and does many less operations, resulting in better performance.
+///     COMPLEXITY
+///     - Every recursive call splits the input into two halves of roughly equal size.
+///     - Therefore, the depth of recursion is the logarithm of n in base 2.
+///     - Each recursive call performs an amount of work which is linear in the size of its input, and also uses a
+///       linear amount of additional space in T, which, however, is instantiated once, at top level.
+///     - Therefore, Time Complexity is O(n * log(n)) and Space Complexity is O(n).
 fn merge_sort<T: Ord + Copy>(list: &mut Vec<T>) {
     let mut aux = list.clone();
     _merge_sort(list.as_mut_slice(), aux.as_mut_slice());
