@@ -1,3 +1,4 @@
+mod queue;
 mod sorting;
 mod stack;
 mod union_find;
